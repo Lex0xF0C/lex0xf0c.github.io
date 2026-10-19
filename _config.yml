@@ -1,0 +1,6 @@
+title: Lex0xF0C's Pages
+description: サイバーセキュリティ関連の公開文書(GCVE BCP、ENISA Secure by Design and Default Playbook)を日本語に訳出した非公式の参考資料集
+theme: jekyll-theme-slate
+lang: ja
+plugins:
+  - jekyll-sitemap
