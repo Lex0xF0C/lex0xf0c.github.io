@@ -6,19 +6,19 @@
 
 ### GCVE BCP 日本語訳(gcve-bcp-ja)
 
-https://lex0xf0c.github.io/gcve-bcp-ja/
+<https://lex0xf0c.github.io/gcve-bcp-ja/>
 
 [GCVE](https://gcve.eu/) が公開している BCP(Best Current Practice)文書を日本語に訳出したものです。脆弱性の取扱いと開示の実践ガイド(BCP-02)や、GCVE 脆弱性形式(BCP-05)、KEV アサーションの形式(BCP-07)などを収録しています。
 
-- リポジトリ: https://github.com/Lex0xF0C/gcve-bcp-ja
+- リポジトリ: <https://github.com/Lex0xF0C/gcve-bcp-ja>
 
 ### ENISA Secure by Design and Default Playbook 日本語訳(enisa-sbd-playbook)
 
-https://lex0xf0c.github.io/enisa-sbd-playbook/
+<https://lex0xf0c.github.io/enisa-sbd-playbook/>
 
 ENISA(欧州連合サイバーセキュリティ局)が公開している「Secure by Design / Secure by Default」プレイブック集を日本語に訳出したものです。「セキュア・バイ・デザイン」(アーキテクチャの基盤、運用の完全性)と「セキュア・バイ・デフォルト」(デフォルトのハードニング、ガイド付きの保護)の全 22 本のプレイブックで構成されています。
 
-- リポジトリ: https://github.com/Lex0xF0C/enisa-sbd-playbook
+- リポジトリ: <https://github.com/Lex0xF0C/enisa-sbd-playbook>
 
 ### 日本語訳についての注意
 
@@ -30,11 +30,11 @@ ENISA(欧州連合サイバーセキュリティ局)が公開している「Secu
 
 ### 脆弱性アドバイザリ作成ツール(lite-advisory-maker)
 
-https://lex0xf0c.github.io/lite-advisory-maker/
+<https://lex0xf0c.github.io/lite-advisory-maker/>
 
 製品の脆弱性アドバイザリを、Markdown 形式で作成するための小さなツールです。CVSS v3.1 基本値の計算、定型文、公開前チェックを備え、日本語・英語の表示に対応しています。ブラウザの中だけで動作し、入力内容を外部へ送信しません。実験・試行レベルのツールであり、不具合が含まれている可能性があります。
 
-- リポジトリ: https://github.com/Lex0xF0C/lite-advisory-maker
+- リポジトリ: <https://github.com/Lex0xF0C/lite-advisory-maker>
 - ライセンス: MIT
 
 ### ツールについての注意
