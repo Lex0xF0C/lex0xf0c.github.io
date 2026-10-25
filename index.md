@@ -40,6 +40,16 @@ ENISA(欧州連合サイバーセキュリティ局)が公開している「Secu
 - リポジトリ: <https://github.com/Lex0xF0C/lite-advisory-maker>
 - ライセンス: MIT
 
+### secriptorium（CSAF作成試行ツール）
+
+<https://lex0xf0c.github.io/secriptorium>
+
+CSAFを最小限構成で試行的に作成するためのツールです。CSAFのフォーマットへの適合は別途公式ツールで確認する必要があります。
+実験・試行レベルのツールであり、不具合が含まれている可能性があります。lite-advisory-maker を流用して作成しています。
+
+- リポジトリ: <https://github.com/Lex0xF0C/secriptorium>
+- ライセンス: MIT
+
 ### ツールについての注意
 
 - 本ツールは文面づくりの補助です。公開の可否、内容の正確性、CVSS 評価の妥当性は、利用者が判断してください。
