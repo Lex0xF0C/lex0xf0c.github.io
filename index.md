@@ -20,6 +20,9 @@ ENISA(欧州連合サイバーセキュリティ局)が公開している「Secu
 
 - リポジトリ: <https://github.com/Lex0xF0C/enisa-sbd-playbook>
 
+### 欧州委員会によるサイバーレジリエンス法に関するFAQ第14版 日本語訳
+<https://lex0xf0c.github.io/KnowledgeBase/EU-Cyber-Resilience-Act/FAQs_on_the_CRA_v14.ja.html>
+
 ### 日本語訳についての注意
 
 - いずれの翻訳も、原文の作成者が作成・承認・推奨したものではありません。
