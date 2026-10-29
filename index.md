@@ -23,6 +23,13 @@ ENISA(欧州連合サイバーセキュリティ局)が公開している「Secu
 ### 欧州委員会によるサイバーレジリエンス法に関するFAQ第14版 日本語訳
 <https://lex0xf0c.github.io/KnowledgeBase/EU-Cyber-Resilience-Act/FAQs_on_the_CRA_v14.ja.html>
 
+### ソフトウェア部品表 (SBOM) に関する ENISA 技術アドバイザリ (ENISA Technical Advisory for Software Bill of Materials)
+<https://lex0xf0c.github.io/KnowledgeBase/EU-Cyber-Resilience-Act/ENISA-Technical-Advisory-for-SBOM-ja.html>
+
+
+### security.txt、CVD ポリシー、セキュリティアドバイザリに関する ENISA 技術アドバイザリ (ENISA Technical Advisory on security.txt, CVD Policies and Security Advisories)
+<https://lex0xf0c.github.io/KnowledgeBase/EU-Cyber-Resilience-Act/enisa_technical_advisory_security_txt_cvd_policies_advisories_ja_md.html>
+
 ### 日本語訳についての注意
 
 - いずれの翻訳も、原文の作成者が作成・承認・推奨したものではありません。
