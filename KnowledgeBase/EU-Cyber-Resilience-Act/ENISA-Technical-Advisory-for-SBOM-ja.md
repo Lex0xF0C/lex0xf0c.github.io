@@ -5,7 +5,7 @@
 > - 本翻訳版は ENISA が作成・承認・推奨したものではなく、**ENISA 非公認**の翻訳です。
 > - 解釈に疑義がある場合は、必ず英語の原文を参照してください。
 
-# ENISA ソフトウェア部品表 (SBOM) 技術アドバイザリ (ENISA Technical Advisory for Software Bill of Materials)
+# ソフトウェア部品表 (SBOM) に関する ENISA 技術アドバイザリ (ENISA Technical Advisory for Software Bill of Materials)
 
 2026年10月 · TLP: CLEAR
 
