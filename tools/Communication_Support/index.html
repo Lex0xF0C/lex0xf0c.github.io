@@ -423,7 +423,7 @@
           tag: '社内 / 役員・経営層',
           phases: [
             {
-              phaseName: 'フェーズ1：事前報告・決刺依頼',
+              phaseName: 'フェーズ1：事前報告・決裁依頼',
               when: '深刻度が極めて高く事業影響が大きい場合、または公開前',
               what: '概要、ビジネス・レピュテーション影響評価、パッチ公開スケジュール、決裁依頼',
               how: '経営層向けエグゼクティブサマリー（文書/口頭）',
@@ -588,7 +588,7 @@
           ]
         },
         {
-          id: 'a6_b6',
+          id: 'b6',
           name: '6. 自社製品の顧客（影響層）',
           tag: '社外 / 全ユーザー',
           phases: [
@@ -655,12 +655,11 @@
         const card = document.createElement('div');
         card.className = 'card';
         
-        // オプション選択部分の構築
         const optionsHtml = item.phases.map((p, idx) => 
           `<option value="${idx}">${escapeHtml(p.phaseName)}</option>`
         ).join('');
 
-        const initialPhase = item.phases;
+        const initialPhase = item.phases; // 初期表示フェーズ（先頭要素）
 
         card.innerHTML = `
           <div class="card-header">
@@ -715,7 +714,6 @@
       const selectedPhase = item.phases[phaseIndex];
       if (!selectedPhase) return;
 
-      // DOM更新
       document.getElementById(`when-${itemId}`).innerText = selectedPhase.when;
       document.getElementById(`what-${itemId}`).innerText = selectedPhase.what;
       document.getElementById(`how-${itemId}`).innerText = selectedPhase.how;
@@ -741,7 +739,8 @@
     }
 
     function escapeHtml(str) {
-      return str
+      if (str === null || str === undefined) return '';
+      return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
