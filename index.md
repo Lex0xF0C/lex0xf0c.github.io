@@ -143,6 +143,13 @@ Secriptorium は、欧州にデジタル要素を含む製品を輸出・展開�
 - リポジトリ: <https://github.com/Lex0xF0C/lite-advisory-maker>
 - ライセンス: MIT
 
+### 脆弱性開示プロセス体験ツール(CVD_Role-play_RPG)
+
+<https://lex0xf0c.github.io/tools/CVD_Role-play_RPG/index.html>
+
+### 脆弱性開示コミュニケーション文面サポートツール
+
+<https://lex0xf0c.github.io/tools/Communication_Support/index.html>
 
 ### ツールについての注意
 
