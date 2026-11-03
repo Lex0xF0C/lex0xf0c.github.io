@@ -35,15 +35,15 @@ ENISA(欧州連合サイバーセキュリティ局)が公開している「Secu
 - 原文のライセンスに従い、翻訳版も同じライセンスの下で公開しています。ライセンスと帰属表示の詳細は、各サイトをご覧ください。
 - 翻訳に誤りがある場合、その責任は翻訳者にあります。
 
-## Secriptorium（セクリプトリアルム）: 脆弱性開示・CRA適合支援ツール
+## Secriptorium（セクリプトリウム）: 脆弱性開示・CRA適合支援ツール
 
-Secriptorium（セクリプトリアルム）は、デジタル要素を含む製品の開発者、中小企業（SME）、および PSIRT（Product Security Incident Response Team）担当者が、脆弱性情報やセキュリティ関連文書をブラウザ上だけで安全かつスピーディーに作成・管理できる、サーバーレス型の静的Webユーティリティです。
+Secriptorium（セクリプトリウム）は、デジタル要素を含む製品の開発者、中小企業（SME）、および PSIRT（Product Security Incident Response Team）担当者が、脆弱性情報やセキュリティ関連文書をブラウザ上だけで安全かつスピーディーに作成・管理できる、サーバーレス型の静的Webユーティリティです。
 
 ---
 
 ### 1. プロジェクト基本情報
 
-- **名称**: Secriptorium（セクリプトリアルム）
+- **名称**: Secriptorium（セクリプトリウム）
 - **Webサイト (Live Demo)**: <https://lex0xf0c.github.io/secriptorium/>
 - **GitHub リポジトリ**: <https://github.com/Lex0xF0C/secriptorium>
 - **ライセンス**: MIT License
