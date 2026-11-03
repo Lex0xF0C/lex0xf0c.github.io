@@ -136,7 +136,7 @@
     .action-btn:hover { background: #7dd3fc; }
     .report-area {
       width: 100%;
-      height: 220px;
+      height: 240px;
       background: #0f172a;
       color: var(--sub);
       border: 1px solid var(--line);
@@ -234,7 +234,7 @@
             effects: { devTrust: +25, finderTrust: +5, execSupport: +10, mentalHp: 0 },
             feedback: "【正解】組み込み機器やクライアント製品では、パッチ作成と並行して「製品自体の設定変更で実施できる回避策」をユーザーに提示することが極めて現実的で有効です。",
             isCorrect: true,
-            nextId: "exec_pressure"
+            nextId: "oss_vulnerability"
           },
           {
             text: "💣「パッチが無理なら、顧客に前置型WAFを買ってもらうようアドバイザリに書きましょう」と提案する",
@@ -263,7 +263,7 @@
             effects: { devTrust: +20, finderTrust: 0, execSupport: +5, mentalHp: 0 },
             feedback: "【正解】実効性のある回避策を提示できたことで、開発チームの信頼を回復しパッチ開発の時間を確保できました。",
             isCorrect: true,
-            nextId: "exec_pressure"
+            nextId: "oss_vulnerability"
           },
           {
             text: "🤷「じゃあ開発チームの責任でなんとかしてください」と突き放す",
@@ -271,6 +271,50 @@
             feedback: "【バッドエンドへ】開発チームとの関係が崩壊しました。",
             isCorrect: false,
             nextId: "badend_dev_strike"
+          }
+        ]
+      },
+      oss_vulnerability: {
+        id: "oss_vulnerability",
+        title: "サプライチェーンの罠: 依存ライブラリのゼロデイ",
+        speaker: "社内SOC / 監視チーム",
+        dialogue: "「弊社製品が通信モジュールとして組み込んでいるオープンソースのCライブラリに別件のRCE脆弱性が報告されました！本家プロジェクトは修正パッチ作成難航中で、リリース目処が立っていません！」",
+        choices: [
+          {
+            text: "🛠️ 脆弱なAPIを使用している機能を設定で無効化する手順（回避策）を検証し、セキュリティ速報として先行公開する",
+            effects: { devTrust: +15, finderTrust: +10, execSupport: +10, mentalHp: 0 },
+            feedback: "【正解】上流（本家OSS）のパッチが遅れる場合でも、自社製品側で実施可能な設定変更・機能OFFなどの回避策を先行提示することがユーザー保護に繋がります。",
+            isCorrect: true,
+            nextId: "cvss_conflict"
+          },
+          {
+            text: "⏳「本家OSSが修正パッチを出すまで、うちの製品のアドバイザリも出すべきではない」と静観する",
+            effects: { finderTrust: -30, devTrust: 0, execSupport: -20, mentalHp: -1 },
+            feedback: "【不正解】静観している間に第三者による野良攻撃が発生するリスクがあります。パッチがなくとも回避策を提示するのがCVDの基本です。",
+            isCorrect: false,
+            nextId: "badend_delayed_patch"
+          }
+        ]
+      },
+      cvss_conflict: {
+        id: "cvss_conflict",
+        title: "評価の相違: CVSSスコアを巡る激論",
+        speaker: "外部セキュリティ研究者",
+        dialogue: "「貴社の評価（CVSS 5.3）は脆弱性を矮小化している！これはリモートから攻撃可能だからCVSS 9.8だ！修正に応じないならブログで不誠実な対応を告発する！」",
+        choices: [
+          {
+            text: "📊 攻撃成立の前提条件（ローカルネットワーク接続が必要等）のCVSSベクトルの算出根拠を丁寧かつ透明に説明し、修正アドバイザリでの謝辞掲載を提案する",
+            effects: { finderTrust: +25, devTrust: +10, execSupport: 0, mentalHp: 0 },
+            feedback: "【正解】感情的にならず、CVSSメトリクスの技術的根拠を明確に示して対話することで、研究者との信頼関係を維持・回復できます。",
+            isCorrect: true,
+            nextId: "exec_pressure"
+          },
+          {
+            text: "🔥「こちらの評価基準に文句があるなら二度と報告してこなくて結構です」と突っぱねる",
+            effects: { finderTrust: -50, devTrust: 0, execSupport: -10, mentalHp: -1 },
+            feedback: "【バッドエンドへ】発見者との信頼関係が完全に破綻し、SNSで対話ログを暴露されブランドが失墜しました。",
+            isCorrect: false,
+            nextId: "badend_sns_leak"
           }
         ]
       },
@@ -285,7 +329,7 @@
             effects: { execSupport: +30, devTrust: +10, finderTrust: 0, mentalHp: 0 },
             feedback: "【正解】単に法や倫理を説くだけでなく、ビジネスリスク（法的責任・銘柄価値失墜）の観点から経営陣を説得し、予定通りの協調的開示の合意を得ました。",
             isCorrect: true,
-            nextId: "advisory_draft"
+            nextId: "wild_poc"
           },
           {
             text: "🤐 営業の圧力に屈し、発見者に無断でエンバーゴ期間の延長と発表延期を連絡する",
@@ -293,6 +337,28 @@
             feedback: "【バッドエンドへ】約束を破られた発見者が「企業による隠蔽」として即座にゼロデイ脆弱性をフル公開。株価暴落と社会的非難に直面しました。",
             isCorrect: false,
             nextId: "badend_coverup"
+          }
+        ]
+      },
+      wild_poc: {
+        id: "wild_poc",
+        title: "緊急事態: 野良PoCの拡散",
+        speaker: "PSIRT分析官",
+        dialogue: "「大変です！協調開示期間の途中ですが、別の第三者リサーチャーが独自に発見した攻撃コード(PoC)をGitHubに公開しました！SNSで拡散が始まっています！」",
+        choices: [
+          {
+            text: "🚨 協調開示スケジュールを繰り上げ、急遽【回避策手順と暫定パッチ】を含めた緊急アドバイザリを発行・周知する",
+            effects: { finderTrust: +15, devTrust: +10, execSupport: +15, mentalHp: 0 },
+            feedback: "【正解】野良PoCが出回った場合、エンバーゴの期限を待たず即座にアドバイザリ（回避策ファースト）を発行してユーザーを防衛するのが鉄則です。",
+            isCorrect: true,
+            nextId: "advisory_draft"
+          },
+          {
+            text: "🙈「90日間の約束だから」と、本家パッチができるまで公式告知を控えて黙秘する",
+            effects: { finderTrust: -30, devTrust: 0, execSupport: -20, mentalHp: -1 },
+            feedback: "【バッドエンドへ】攻撃コードが野放しとなり、多数の顧客環境で被害が拡大。無対応の姿勢が強く非難されました。",
+            isCorrect: false,
+            nextId: "badend_delayed_patch"
           }
         ]
       },
@@ -305,7 +371,7 @@
           {
             text: "📢 CVE番号・謝辞・回避策手順・パッチ情報を含むセキュリティアドバイザリを協調公表し、製品アップデートを告知する",
             effects: { finderTrust: +20, devTrust: +10, execSupport: +10, mentalHp: 0 },
-            feedback: "【クリアへ】関係者全員との調整が完了し、完璧なタイミングで協調的脆弱性開示(CVD)を完了できました！",
+            feedback: "【クリアへ】数々の試練を乗り越え、関係者全員との調整を完遂！完璧なタイミングで協調的脆弱性開示(CVD)を達成しました！",
             isCorrect: true,
             nextId: "good_end"
           },
@@ -322,7 +388,7 @@
         id: "good_end",
         title: "🎉 CLEAR: 協調的開示の成功",
         speaker: "PSIRT事務局",
-        dialogue: "外部研究者、開発チーム、経営陣との対話を見事に完遂し、適切な回避策とパッチを添えて協調的開示(CVD)を達成しました！製品の安全性が守られました。",
+        dialogue: "外部研究者、サプライチェーンOSS、開発チーム、営業・経営陣との多重の修羅場を見事に完遂し、適切な回避策とパッチを添えて協調的開示(CVD)を達成しました！製品の安全性が守られました。",
         isEnd: true,
         isSuccess: true
       },
