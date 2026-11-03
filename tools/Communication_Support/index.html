@@ -659,8 +659,8 @@
           `<option value="${idx}">${escapeHtml(p.phaseName)}</option>`
         ).join('');
 
-        // 修正点: item.phases を直接指定し、初期表示時にフェーズ1のデータを確実に取得
-        const initialPhase = item.phases; 
+        // フェーズ配列の1番目 (Index 0) を明示的に参照して初期ロード時の表示漏れを解消
+        const initialPhase = item.phases;
 
         card.innerHTML = `
           <div class="card-header">
