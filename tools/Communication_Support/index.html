@@ -30,6 +30,14 @@
       --theme-badge-text: #991b1b;
     }
 
+    body.theme-persuasion {
+      /* パターンC (社内説得: インディゴ) */
+      --theme-primary: #4f46e5;
+      --theme-primary-hover: #4338ca;
+      --theme-badge-bg: #e0e7ff;
+      --theme-badge-text: #3730a3;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -71,17 +79,19 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
     }
 
     .toggle-btn {
       flex: 1;
+      min-width: 260px;
       max-width: 360px;
-      padding: 12px 20px;
+      padding: 14px 18px;
       border: 2px solid var(--border-color);
       background-color: #ffffff;
       border-radius: var(--radius);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -103,6 +113,13 @@
       border-color: #dc2626;
       background-color: #fef2f2;
       color: #991b1b;
+      box-shadow: var(--shadow);
+    }
+
+    .toggle-btn.active.btn-persuasion {
+      border-color: #4f46e5;
+      background-color: #e0e7ff;
+      color: #3730a3;
       box-shadow: var(--shadow);
     }
 
@@ -492,6 +509,9 @@
       .pattern-toggle {
         flex-direction: column;
       }
+      .toggle-btn {
+        min-width: 100%;
+      }
       .timeline-flow {
         flex-direction: column;
       }
@@ -524,10 +544,13 @@
       <button class="toggle-btn btn-emergency" id="btnPatternB" onclick="setPattern('B')">
         <span>パターンB：悪用発生 (緊急対応)</span>
       </button>
+      <button class="toggle-btn btn-persuasion" id="btnPatternC" onclick="setPattern('C')">
+        <span>パターンC：社内説得 (トークスクリプト)</span>
+      </button>
     </div>
 
     <!-- CVD/緊急 プロセスフロー (横向きタイムライン) -->
-    <div class="process-timeline-card">
+    <div class="process-timeline-card" id="timelineSection">
       <div class="timeline-title">
         <span>CVD・インシデント対応プロセスフロー (クリックで一括フェーズ切替)</span>
       </div>
@@ -536,8 +559,8 @@
       </div>
     </div>
 
-    <!-- 社内説得用トークスクリプト -->
-    <div class="talkscript-section">
+    <!-- 社内説得用トークスクリプト (パターンCで切り替え表示) -->
+    <div class="talkscript-section" id="talkscriptSection" style="display: none;">
       <div class="talkscript-title">
         <span>社内説得用トークスクリプト案（経営層・営業・開発部門向け）</span>
       </div>
@@ -605,11 +628,11 @@
     </div>
 
     <!-- 検索フィルター -->
-    <div class="filter-box">
+    <div class="filter-box" id="filterBox">
       <input type="text" id="searchInput" class="filter-input" placeholder="ステークホルダー名やキーワードで検索..." oninput="filterCards()">
     </div>
 
-    <div class="section-header">
+    <div class="section-header" id="sectionHeader">
       <span>ステークホルダー別 運用連絡文案</span>
     </div>
 
@@ -693,7 +716,7 @@
             {
               phaseName: 'フェーズ1：トリアージ・修正依頼',
               when: '初期トリアージ完了直後（24〜48時間以内）',
-              what: '脆弱の詳細・再現手順（PoC）、影響範囲、CVSS仮評価、修正パッチ作成依頼',
+              what: '脆弱性の詳細・再現手順（PoC）、影響範囲、CVSS仮評価、修正パッチ作成依頼',
               how: '社内課題管理システム（Jira / GitHub Issues等）',
               template: `件名: 【修正依頼・トリアージ】製品脆弱性に関する対応依頼 [管理ID: CVD-2026-XXXX]\n\n開発チーム 各位\n\nお疲れ様です。PSIRTの〇〇です。\n外部リポーターより弊社製品における脆弱性の報告を受領いたしました。初期トリアージを完了いたしましたので、修正パッチまたは回避策の策定をご依頼いたします。\n\n・管理ID: CVD-2026-XXXX\n・対象製品・バージョン: [製品名 / バージョン]\n・CVSS仮評価: [CVSS v3 スコア (例: 7.5 High)]\n・詳細・再現手順(PoC): [PoCリンクまたは概要]\n\nつきましては、[〇月〇日] までに修正パッチの作成可否およびリリース予定時期についてご回答いただけますようお願い申し上げます。`
             },
@@ -962,18 +985,45 @@
     function setPattern(pattern) {
       currentPattern = pattern;
       activeGlobalPhaseIndex = 0;
-      document.body.className = pattern === 'B' ? 'theme-emergency' : '';
 
+      // テーマ切り替え
+      document.body.className = pattern === 'B' ? 'theme-emergency' : (pattern === 'C' ? 'theme-persuasion' : '');
+
+      // ボタンアクティブ表示切り替え
       document.getElementById('btnPatternA').classList.toggle('active', pattern === 'A');
       document.getElementById('btnPatternB').classList.toggle('active', pattern === 'B');
+      document.getElementById('btnPatternC').classList.toggle('active', pattern === 'C');
 
-      renderTimeline();
-      renderCards();
+      // 表示エリア切り替え (パターンCの場合はトークスクリプトのみ表示)
+      const timelineSec = document.getElementById('timelineSection');
+      const filterSec = document.getElementById('filterBox');
+      const headerSec = document.getElementById('sectionHeader');
+      const cardsSec = document.getElementById('cardsGrid');
+      const talkscriptSec = document.getElementById('talkscriptSection');
+
+      if (pattern === 'C') {
+        timelineSec.style.display = 'none';
+        filterSec.style.display = 'none';
+        headerSec.style.display = 'none';
+        cardsSec.style.display = 'none';
+        talkscriptSec.style.display = 'block';
+      } else {
+        timelineSec.style.display = 'block';
+        filterSec.style.display = 'block';
+        headerSec.style.display = 'flex';
+        cardsSec.style.display = 'grid';
+        talkscriptSec.style.display = 'none';
+
+        renderTimeline();
+        renderCards();
+      }
     }
 
     function renderTimeline() {
       const container = document.getElementById('timelineFlow');
       const list = timelineData[currentPattern];
+      if (!list) return;
+
       container.innerHTML = '';
 
       list.forEach((item) => {
@@ -997,6 +1047,8 @@
       renderTimeline();
 
       const list = psirtData[currentPattern];
+      if (!list) return;
+
       list.forEach(item => {
         const targetPhaseIdx = Math.min(phaseIndex, item.phases.length - 1);
         const selectElem = document.querySelector(`.phase-select[data-card-id="${item.id}"]`);
@@ -1011,6 +1063,7 @@
       const container = document.getElementById('cardsGrid');
       const filterText = document.getElementById('searchInput').value.toLowerCase();
       const list = psirtData[currentPattern];
+      if (!list) return;
 
       container.innerHTML = '';
 
@@ -1080,6 +1133,8 @@
 
     function changePhase(itemId, phaseIndex) {
       const list = psirtData[currentPattern];
+      if (!list) return;
+
       const item = list.find(i => i.id === itemId);
       if (!item) return;
 
@@ -1125,8 +1180,8 @@
         .replace(/'/g, '&#039;');
     }
 
-    renderTimeline();
-    renderCards();
+    // 初期起動
+    setPattern('A');
   </script>
 </body>
 </html>
