@@ -44,8 +44,8 @@ Secriptorium（セクリプトリアルム）は、デジタル要素を含む�
 ### 1. プロジェクト基本情報
 
 - **名称**: Secriptorium（セクリプトリアルム）
-- **Webサイト (Live Demo)**: https://lex0xf0c.github.io/secriptorium/
-- **GitHub リポジトリ**: https://github.com/Lex0xF0C/secriptorium
+- **Webサイト (Live Demo)**: <https://lex0xf0c.github.io/secriptorium/>
+- **GitHub リポジトリ**: <https://github.com/Lex0xF0C/secriptorium>
 - **ライセンス**: MIT License
 - **開発・デプロイ**: Vite + Vue 3 + TypeScript（GitHub Actions による自動ビルド・デプロイ）
 
