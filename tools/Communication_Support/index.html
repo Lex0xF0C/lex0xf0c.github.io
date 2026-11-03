@@ -659,7 +659,7 @@
           `<option value="${idx}">${escapeHtml(p.phaseName)}</option>`
         ).join('');
 
-        // フェーズ配列の1番目 (Index 0) を明示的に参照して初期ロード時の表示漏れを解消
+        // 修正箇所: 配列の先頭要素 (フェーズ1のオブジェクト) を正確に参照
         const initialPhase = item.phases;
 
         card.innerHTML = `
@@ -695,7 +695,7 @@
           <!-- Dynamic Template Section -->
           <div class="template-section">
             <div class="template-header">
-              <span class="template-label">ポライト文案テンプレート (編集可能)</span>
+              <span class="template-label">文案テンプレート (編集可能)</span>
             </div>
             <textarea class="template-text" id="tpl-${item.id}">${escapeHtml(initialPhase.template)}</textarea>
             <button class="copy-btn" onclick="copyTemplate('tpl-${item.id}', this)">
