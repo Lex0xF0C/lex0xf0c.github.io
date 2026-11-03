@@ -51,7 +51,7 @@
     }
 
     header {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
@@ -71,13 +71,13 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .toggle-btn {
       flex: 1;
       max-width: 360px;
-      padding: 14px 20px;
+      padding: 12px 20px;
       border: 2px solid var(--border-color);
       background-color: #ffffff;
       border-radius: var(--radius);
@@ -106,6 +106,200 @@
       box-shadow: var(--shadow);
     }
 
+    /* CVD/緊急 プロセスフロー (横向きタイムライン) */
+    .process-timeline-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--theme-primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .timeline-flow {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .timeline-node {
+      flex: 1;
+      min-width: 220px;
+      background-color: #f8fafc;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .timeline-node:hover {
+      border-color: var(--theme-primary);
+      transform: translateY(-2px);
+    }
+
+    .timeline-node.active {
+      border-color: var(--theme-primary);
+      background-color: var(--theme-badge-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .node-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .node-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background-color: var(--theme-primary);
+      color: #ffffff;
+    }
+
+    .node-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .node-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* 社内説得用トークスクリプトセクション */
+    .talkscript-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .talkscript-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--theme-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .talkscript-intro {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+      background-color: #f1f5f9;
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .talkscript-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .script-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 18px;
+      background-color: #fafafa;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .script-target {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--theme-primary);
+    }
+
+    .script-purpose {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      background-color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px dashed var(--border-color);
+    }
+
+    textarea.script-text {
+      width: 100%;
+      height: 160px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      resize: vertical;
+      background-color: #ffffff;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .script-summary-box {
+      margin-top: 20px;
+      background-color: #fffbe0;
+      border: 1px solid #ffe58f;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .script-summary-title {
+      font-weight: 700;
+      color: #d48806;
+      margin-bottom: 8px;
+    }
+
+    .script-summary-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .script-summary-list li {
+      margin-bottom: 6px;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .script-summary-list li::before {
+      content: "・";
+      position: absolute;
+      left: 0;
+      color: #d48806;
+      font-weight: bold;
+    }
+
     /* 検索フィルター */
     .filter-box {
       margin-bottom: 24px;
@@ -123,6 +317,18 @@
 
     .filter-input:focus {
       border-color: var(--theme-primary);
+    }
+
+    .section-header {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     /* ステークホルダーカードグリッド */
@@ -286,6 +492,12 @@
       .pattern-toggle {
         flex-direction: column;
       }
+      .timeline-flow {
+        flex-direction: column;
+      }
+      .timeline-node {
+        min-width: 100%;
+      }
       .phase-selector-container {
         flex-direction: column;
         align-items: flex-start;
@@ -314,9 +526,91 @@
       </button>
     </div>
 
+    <!-- CVD/緊急 プロセスフロー (横向きタイムライン) -->
+    <div class="process-timeline-card">
+      <div class="timeline-title">
+        <span>CVD・インシデント対応プロセスフロー (クリックで一括フェーズ切替)</span>
+      </div>
+      <div class="timeline-flow" id="timelineFlow">
+        <!-- JSで動的生成 -->
+      </div>
+    </div>
+
+    <!-- 社内説得用トークスクリプト -->
+    <div class="talkscript-section">
+      <div class="talkscript-title">
+        <span>社内説得用トークスクリプト案（経営層・営業・開発部門向け）</span>
+      </div>
+      <div class="talkscript-intro">
+        経営層や営業責任者、開発現場を説得する際にそのまま活用できる実践的なトークスクリプトです。単に「公表させてください」とお願いするのではなく、相手の関心事（事業継続、顧客関係、開発工数）に合わせて<b>「何が最大のビジネスリスクか」</b>を翻訳して伝える構成にしています。
+      </div>
+
+      <div class="talkscript-grid">
+        <!-- 経営層向け -->
+        <div class="script-card">
+          <div class="script-header">
+            <span class="script-target">1. 対 経営層（役員・取締役）向けトークスクリプト</span>
+            <button class="copy-btn" onclick="copyTemplate('script-exec', this)">スクリプトをコピー</button>
+          </div>
+          <div class="script-purpose">
+            <b>【対話の目的】</b> 公表による一時的な評判への懸念を受け止めつつ、<b>「制御された公表（CVD）」と「未制御の漏洩（最悪のシナリオ）」</b>を対比させ、事業継続の観点から決断を促す。
+          </div>
+          <textarea class="script-text" id="script-exec">PSIRT/セキュリティ担当: 「役員、今回の脆弱性対応における判断軸についてご報告とご相談があります。
+技術的にはリモートコード実行(RCE)の危険度が高い状態ですが、本質的なリスクは『公表するかどうか』ではなく、『リスクを自社でコントロールできるか、それとも外から暴露されるか』にあります。
+もし営業側の要望通り公表を延期した場合、発見者や第三者によってSNSやメディアに暴露される恐れがあります。その場合、『危険と知りながら隠していた企業』というレッテルが貼り直され、ブランド毀損・株価下落・監督官庁からの指導・最悪の場合は株主代表訴訟に発展します。
+一方で、業界標準の協調的開示(CVD)プロセスに則り、回避策（Workaround）と修正パッチを揃えて自社から発表すれば、『問題に対して誠実かつ迅速に対応するセキュアな企業姿勢』を示せます。
+会社としてどちらのビジネスリスクを取るべきか、制御可能な公表プロセスで進めるご決断をいただきたく存じます。」</textarea>
+        </div>
+
+        <!-- 営業責任者向け -->
+        <div class="script-card">
+          <div class="script-header">
+            <span class="script-target">2. 対 営業責任者（営業本部長）向けトークスクリプト</span>
+            <button class="copy-btn" onclick="copyTemplate('script-sales', this)">スクリプトをコピー</button>
+          </div>
+          <div class="script-purpose">
+            <b>【対話の目的】</b> 「契約更新・売上への悪影響」を危惧する営業側に対し、<b>「隠蔽して契約する法的リスク」</b>を指摘すると同時に、顧客への<b>「営業トークと回避策」</b>をセットで提供して不安を解消する。
+          </div>
+          <textarea class="script-text" id="script-sales">PSIRT/セキュリティ担当: 「〇〇本部長、今期の大口案件の更新時期と重なり、ご懸念されるお気持ちは大変よく理解できます。
+ただ、一番危険なのは『脆弱性を隠したまま契約を更新すること』です。後から攻撃被害が発生したり隠蔽が発覚した場合、契約上の善管注意義務違反や不実記載として全額返金・損害賠償請求・全件解約に追い込まれる法的リスクがあります。そうなれば、今回の案件だけでなく営業部門全体の信頼に関わります。
+そこで提案です。単に『バグがありました』と発表するのではなく、『既に安全を確保するための回避策（特定機能のオフ・設定変更手順）が用意できている』という状態で公表します。
+顧客に対しては、『弊社はセキュリティ監視と対応を強化しており、被害が起きる前に事前に手当て（回避策）をお知らせする体制を整えています』と説明できる回答ガイドライン（FAQ）をPSIRTで用意します。これを持って営業活動を行っていただけないでしょうか。」</textarea>
+        </div>
+
+        <!-- 開発リーダー向け -->
+        <div class="script-card">
+          <div class="script-header">
+            <span class="script-target">3. 対 開発リーダー・技術部門向けトークスクリプト</span>
+            <button class="copy-btn" onclick="copyTemplate('script-dev', this)">スクリプトをコピー</button>
+          </div>
+          <div class="script-purpose">
+            <b>【対話の目的】</b> レガシーコードや人手不足を理由に反発する開発チームに対し、「3日以内の完璧なパッチ作成」という過剰なプレッシャーを解除し、<b>「設定変更等による回避策の先行作成」</b>へゴールを再設定する。
+          </div>
+          <textarea class="script-text" id="script-dev">PSIRT/セキュリティ担当: 「〇〇さん、既存コードへの影響や検証工数を考えると、数日で完璧な修正パッチを作るのが現実的でないことは重々承知しています。開発チームに無理な修正を強いて二次障害を起こすことは避けたいです。
+ですので、最初から完璧なパッチを出そうとしなくて大丈夫です。
+まずは、『コードを書き換えずに、不要なポートの遮断や特定機能の無効化など、設定変更だけで攻撃を防げる回避策（Workaround）』を1〜2日で作れませんか？
+これさえ用意できれば、アドバイザリ（注意喚起）を出してユーザー側で防衛してもらうことができます。それによって時間を稼ぎ、その間に本パッチの開発と検証をじっくり進めましょう。回避策の検証に全力を貸していただけますか？」</textarea>
+        </div>
+      </div>
+
+      <!-- 説得のポイントまとめ -->
+      <div class="script-summary-box">
+        <div class="script-summary-title">💡 説得のポイントまとめ</div>
+        <ul class="script-summary-list">
+          <li><b>対 経営層:</b> 「金額の算出」ではなく、「制御された公表 vs 暴露による崩壊」というシナリオ比較で決断させる。</li>
+          <li><b>対 営業層:</b> 拒絶するだけでなく、「顧客にどう説明すればポジティブに受け取られるか」というFAQと回避策をセットで渡す。</li>
+          <li><b>対 開発層:</b> 「パッチ強要」ではなく、「回避策による時間稼ぎ」を提案して心理的負荷を下げる。</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- 検索フィルター -->
     <div class="filter-box">
       <input type="text" id="searchInput" class="filter-input" placeholder="ステークホルダー名やキーワードで検索..." oninput="filterCards()">
+    </div>
+
+    <div class="section-header">
+      <span>ステークホルダー別 運用連絡文案</span>
     </div>
 
     <!-- カード一覧 -->
@@ -324,6 +618,43 @@
   </div>
 
   <script>
+    const timelineData = {
+      A: [
+        {
+          phaseIndex: 0,
+          badge: 'フェーズ 1',
+          title: '受領・トリアージ',
+          desc: '報告受領、管理ID発行、PoC検証、エンバーゴ要請'
+        },
+        {
+          phaseIndex: 1,
+          badge: 'フェーズ 2',
+          title: '検証・修正対応',
+          desc: 'CVSS評価、パッチ/回避策作成、関係部署事前調整'
+        },
+        {
+          phaseIndex: 2,
+          badge: 'フェーズ 3',
+          title: 'アドバイザリ公表',
+          desc: '協調的開示（CVD）、パッチ配信、謝辞掲載'
+        }
+      ],
+      B: [
+        {
+          phaseIndex: 0,
+          badge: 'フェーズ 1',
+          title: '緊急回避・検知',
+          desc: 'ゼロデイ悪用確認、キルスイッチ優先配布、緊急通知'
+        },
+        {
+          phaseIndex: 1,
+          badge: 'フェーズ 2',
+          title: '恒久対策・報告',
+          desc: 'ホットフィックス超高速配信、規制当局速報提出'
+        }
+      ]
+    };
+
     const psirtData = {
       A: [
         {
@@ -362,7 +693,7 @@
             {
               phaseName: 'フェーズ1：トリアージ・修正依頼',
               when: '初期トリアージ完了直後（24〜48時間以内）',
-              what: '脆弱性の詳細・再現手順（PoC）、影響範囲、CVSS仮評価、修正パッチ作成依頼',
+              what: '脆弱の詳細・再現手順（PoC）、影響範囲、CVSS仮評価、修正パッチ作成依頼',
               how: '社内課題管理システム（Jira / GitHub Issues等）',
               template: `件名: 【修正依頼・トリアージ】製品脆弱性に関する対応依頼 [管理ID: CVD-2026-XXXX]\n\n開発チーム 各位\n\nお疲れ様です。PSIRTの〇〇です。\n外部リポーターより弊社製品における脆弱性の報告を受領いたしました。初期トリアージを完了いたしましたので、修正パッチまたは回避策の策定をご依頼いたします。\n\n・管理ID: CVD-2026-XXXX\n・対象製品・バージョン: [製品名 / バージョン]\n・CVSS仮評価: [CVSS v3 スコア (例: 7.5 High)]\n・詳細・再現手順(PoC): [PoCリンクまたは概要]\n\nつきましては、[〇月〇日] までに修正パッチの作成可否およびリリース予定時期についてご回答いただけますようお願い申し上げます。`
             },
@@ -541,7 +872,7 @@
               when: '発覚後 24〜72時間以内（規制による）',
               what: '個人情報保護委員会や監督官庁へのインシデント速報作成',
               how: '法務共同ドキュメント',
-              template: `件名: 【要確認】監督官庁提出用 インシデント発生速報ドラフトの件\n\n広報部・法務部 各位\n\nPSIRTの〇〇です。\n今回のゼロデイ攻撃に関して、個人情報保護委員会および個人情報保護法/各種ガイドラインに基づき提出する速報報告書のドラフト作成いたしました。\n\n添付の報告書案について、法的記載事項を満たしているかレビューをお願いいたします。本日 [〇時] までに確定し提出予定です。`
+              template: `件名: 【要確認】監督官庁提出用 インシデント発生速報ドラフトの件\n\n広報部・法務部 各位\n\nPSIRTの〇〇です。\n今回のゼロデイ攻撃に関して、個人情報保護委員会および個人情報保護法/各種ガイドラインに基づき提出する速報報告書のドラフトを作成いたしました。\n\n添付の報告書案について、法的記載事項を満たしているかレビューをお願いいたします。本日 [〇時] までに確定し提出予定です。`
             }
           ]
         },
@@ -626,15 +957,54 @@
     };
 
     let currentPattern = 'A';
+    let activeGlobalPhaseIndex = 0;
 
     function setPattern(pattern) {
       currentPattern = pattern;
+      activeGlobalPhaseIndex = 0;
       document.body.className = pattern === 'B' ? 'theme-emergency' : '';
 
       document.getElementById('btnPatternA').classList.toggle('active', pattern === 'A');
       document.getElementById('btnPatternB').classList.toggle('active', pattern === 'B');
 
+      renderTimeline();
       renderCards();
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timelineFlow');
+      const list = timelineData[currentPattern];
+      container.innerHTML = '';
+
+      list.forEach((item) => {
+        const node = document.createElement('div');
+        node.className = `timeline-node ${item.phaseIndex === activeGlobalPhaseIndex ? 'active' : ''}`;
+        node.onclick = () => selectGlobalPhase(item.phaseIndex);
+
+        node.innerHTML = `
+          <div class="node-header">
+            <span class="node-badge">${escapeHtml(item.badge)}</span>
+          </div>
+          <div class="node-title">${escapeHtml(item.title)}</div>
+          <div class="node-desc">${escapeHtml(item.desc)}</div>
+        `;
+        container.appendChild(node);
+      });
+    }
+
+    function selectGlobalPhase(phaseIndex) {
+      activeGlobalPhaseIndex = phaseIndex;
+      renderTimeline();
+
+      const list = psirtData[currentPattern];
+      list.forEach(item => {
+        const targetPhaseIdx = Math.min(phaseIndex, item.phases.length - 1);
+        const selectElem = document.querySelector(`.phase-select[data-card-id="${item.id}"]`);
+        if (selectElem) {
+          selectElem.value = targetPhaseIdx;
+          changePhase(item.id, targetPhaseIdx);
+        }
+      });
     }
 
     function renderCards() {
@@ -655,12 +1025,13 @@
         const card = document.createElement('div');
         card.className = 'card';
         
+        const currentTargetIdx = Math.min(activeGlobalPhaseIndex, item.phases.length - 1);
+
         const optionsHtml = item.phases.map((p, idx) => 
-          `<option value="${idx}">${escapeHtml(p.phaseName)}</option>`
+          `<option value="${idx}" ${idx === currentTargetIdx ? 'selected' : ''}>${escapeHtml(p.phaseName)}</option>`
         ).join('');
 
-        // 先頭のフェーズ（フェーズ1）のオブジェクトを正確に指定して取得
-        const initialPhase = item.phases[0];
+        const initialPhase = item.phases[currentTargetIdx];
 
         card.innerHTML = `
           <div class="card-header">
@@ -671,7 +1042,7 @@
           <!-- フェーズ切替セレクター -->
           <div class="phase-selector-container">
             <span class="phase-label">対応フェーズ・シナリオ選択:</span>
-            <select class="phase-select" onchange="changePhase('${item.id}', this.value)">
+            <select class="phase-select" data-card-id="${item.id}" onchange="changePhase('${item.id}', this.value)">
               ${optionsHtml}
             </select>
           </div>
@@ -715,10 +1086,15 @@
       const selectedPhase = item.phases[phaseIndex];
       if (!selectedPhase) return;
 
-      document.getElementById(`when-${itemId}`).innerText = selectedPhase.when;
-      document.getElementById(`what-${itemId}`).innerText = selectedPhase.what;
-      document.getElementById(`how-${itemId}`).innerText = selectedPhase.how;
-      document.getElementById(`tpl-${itemId}`).value = selectedPhase.template;
+      const whenElem = document.getElementById(`when-${itemId}`);
+      const whatElem = document.getElementById(`what-${itemId}`);
+      const howElem = document.getElementById(`how-${itemId}`);
+      const tplElem = document.getElementById(`tpl-${itemId}`);
+
+      if (whenElem) whenElem.innerText = selectedPhase.when;
+      if (whatElem) whatElem.innerText = selectedPhase.what;
+      if (howElem) howElem.innerText = selectedPhase.how;
+      if (tplElem) tplElem.value = selectedPhase.template;
     }
 
     function filterCards() {
@@ -749,6 +1125,7 @@
         .replace(/'/g, '&#039;');
     }
 
+    renderTimeline();
     renderCards();
   </script>
 </body>
