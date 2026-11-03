@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PSIRT ステークホルダー連絡対応サポートツール</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+      
+      /* パターンA (CVD: ブルー基調) */
+      --theme-primary: #1e40af;
+      --theme-primary-hover: #1d4ed8;
+      --theme-badge-bg: #eff6ff;
+      --theme-badge-text: #1e40af;
+      --theme-header-bg: #f0fdf4;
+      
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 12px;
+    }
+
+    body.theme-emergency {
+      /* パターンB (緊急: レッド基調) */
+      --theme-primary: #991b1b;
+      --theme-primary-hover: #dc2626;
+      --theme-badge-bg: #fef2f2;
+      --theme-badge-text: #991b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px;
+      transition: background-color 0.3s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* パターン切替トグルタブ */
+    .pattern-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      max-width: 360px;
+      padding: 14px 20px;
+      border: 2px solid var(--border-color);
+      background-color: #ffffff;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .toggle-btn.active.btn-cvd {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+      color: #1e40af;
+      box-shadow: var(--shadow);
+    }
+
+    .toggle-btn.active.btn-emergency {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+      color: #991b1b;
+      box-shadow: var(--shadow);
+    }
+
+    /* 検索フィルター */
+    .filter-box {
+      margin-bottom: 24px;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-input:focus {
+      border-color: var(--theme-primary);
+    }
+
+    /* ステークホルダーカードグリッド */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--theme-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stakeholder-tag {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background-color: var(--theme-badge-bg);
+      color: var(--theme-badge-text);
+      font-weight: 600;
+    }
+
+    /* When, What, How マトリクスグリッド */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+      background-color: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .matrix-item {
+      font-size: 0.88rem;
+    }
+
+    .matrix-label {
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .matrix-val {
+      color: var(--text-main);
+    }
+
+    /* 文面エリア */
+    .template-section {
+      margin-top: 16px;
+    }
+
+    .template-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .template-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    textarea.template-text {
+      width: 100%;
+      height: 160px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      resize: vertical;
+      background-color: #ffffff;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    textarea.template-text:focus {
+      outline: none;
+      border-color: var(--theme-primary);
+    }
+
+    .copy-btn {
+      background-color: var(--theme-primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover {
+      background-color: var(--theme-primary-hover);
+    }
+
+    .copy-btn.copied {
+      background-color: #16a34a !important;
+    }
+
+    @media (max-width: 768px) {
+      .pattern-toggle {
+        flex-direction: column;
+      }
+      .matrix-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>PSIRT ステークホルダー連絡サポート</h1>
+      <p class="subtitle">製品セキュリティインシデント運用設計書に基づく文案作成・連絡マトリクスツール</p>
+    </header>
+
+    <!-- 運用パターン切替タブ -->
+    <div class="pattern-toggle">
+      <button class="toggle-btn active btn-cvd" id="btnPatternA" onclick="setPattern('A')">
+        <span>パターンA：通常脆弱性 (CVD)</span>
+      </button>
+      <button class="toggle-btn btn-emergency" id="btnPatternB" onclick="setPattern('B')">
+        <span>パターンB：悪用発生 (緊急対応)</span>
+      </button>
+    </div>
+
+    <!-- キーワード検索 -->
+    <div class="filter-box">
+      <input type="text" id="searchInput" class="filter-input" placeholder="ステークホルダー名やキーワードで検索..." oninput="filterCards()">
+    </div>
+
+    <!-- ステークホルダーカード一覧 -->
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <script>
+    // 統合企画書に基づくデータ定義
+    const psirtData = {
+      A: [
+        {
+          id: 'a1',
+          name: '1. 発見者（リポーター）',
+          tag: '社外 / セキュリティ研究者',
+          when: '報告受領後 24〜48時間以内（初回）',
+          what: '受領確認（管理ID付与）、検証状況、修正パッチ/回避策進捗、公開スケジュール合意',
+          how: 'PGP暗号化メール / セキュリティポータル（管理ID付与）',
+          template: `件名: [受領確認: CVD-2026-XXXX] ご報告いただいた脆弱性について\n\n〇〇 様\n\nPSIRT（製品セキュリティインシデントレスポンスチーム）でございます。\nこの度は、弊社製品 [製品名] に関するセキュリティ上のご指摘・ご報告をいただき、誠にありがとうございます。\n\nいただいた内容につきまして、以下の管理IDを割り当て、現在弊社開発チームとともにトリアージを進めております。\n\n・管理ID: CVD-2026-XXXX\n・対象製品: [製品名 / バージョン]\n\n検証結果および今後の修正・公表スケジュールにつきましては、[〇営業日以内 / 〇月〇日までに] 改めてご連絡いたします。なお、協調的脆弱性公表（CVD）に基づき、修正パッチが提供されるまでの間、本情報の非公開（エンバーゴ）にご協力いただけますと幸いです。\n\n公表時には、ご希望に応じてアドバイザリ内にお名前（またはハンドルネーム）をクレジッターとして記載させていただきます。\n\n引き続きよろしくお願い申し上げます。`
+        },
+        {
+          id: 'a2',
+          name: '2. 開発チーム',
+          tag: '社内 / 開発部門',
+          when: '初期トリアージ完了直後（24〜48時間以内）',
+          what: '脆弱性の詳細・再現手順（PoC）、影響範囲、CVSS仮評価、修正コード/回避策作成依頼',
+          how: '社内課題管理システム（Jira / GitHub Issues等）',
+          template: `件名: 【修正依頼・トリアージ】製品脆弱性に関する対応依頼 [管理ID: CVD-2026-XXXX]\n\n開発チーム 各位\n\nお疲れ様です。PSIRTの〇〇です。\n外部リポーターより弊社製品における脆弱性の報告を受領いたしました。初期トリアージを完了いたしましたので、修正パッチまたは回避策の策定をご依頼いたします。\n\n・管理ID: CVD-2026-XXXX\n・対象製品・バージョン: [製品名 / バージョン]\n・CVSS仮評価: [CVSS v3 スコア (例: 7.5 High)]\n・詳細・再現手順(PoC): [PoCリンクまたは概要]\n\nつきましては、[〇月〇日] までに修正パッチの作成可否およびリリース予定時期についてご回答いただけますようお願い申し上げます。`
+        },
+        {
+          id: 'a3',
+          name: '3. 広報・法務',
+          tag: '社内 / コーポレート',
+          when: '深刻度がHigh/Critical、または公開の数週間〜数日前',
+          what: '脆弱性概要、CVE ID、リリース予定日、対外文書文面、法的・契約上のリスク',
+          how: '社内チャット、ミーティング、法務レビューフロー',
+          template: `件名: 【事前面談・レビュー依頼】脆弱性公表に伴う対外アナウンス方針のご確認 [CVE-2026-XXXX]\n\n広報部・法務部 各位\n\nお疲れ様です。PSIRTの〇〇です。\n弊社製品 [製品名] におけるセキュリティ脆弱性（CVE-2026-XXXX）の修正パッチ公開およびセキュリティアドバイザリの開示を予定しております。\n\n公開にあたり、対外発表文書案および法的・契約上のリスク評価につきまして事前のご確認をお願いしたく存じます。\n\n・対象製品: [製品名]\n・深刻度: [High / Critical]\n・公表予定日: 〇月〇日（〇） 〇:〇分\n\n添付の公表文案をご確認いただき、不都合やご修正点がございましたら [〇月〇日] までにご連絡いただけますと幸いです。`
+        },
+        {
+          id: 'a4',
+          name: '4. 営業・サポート',
+          tag: '社内 / 顧客対応部門',
+          when: '修正パッチリリース / アドバイザリ公開の直前〜同時',
+          what: '顧客向けアナウンス概要、想定問答集（FAQ）、問い合わせ対応方針',
+          how: '事前ブリーフィング、ナレッジベース・テンプレート共有',
+          template: `件名: 【事前共有・FAQ】製品セキュリティアドバイザリ公開に伴う顧客対応方針の案内\n\n営業本部・サポートチーム 各位\n\nお疲れ様です。PSIRTの〇〇です。\n本日 [〇月〇日 〇時] に、弊社製品 [製品名] に関するセキュリティアドバイザリを公開いたします。\n\n顧客からの問い合わせ増加が想定されますため、事前に対応方針および想定問答集（FAQ）を共有いたします。\n\n・アナウンス概要: [脆弱性の概要と修正パッチリリース]\n・顧客への推奨アクション: 最新バージョン [Ver X.X] へのアップデート\n\n添付のFAQおよび対応マニュアルをご参照の上、顧客窓口でのスムーズな一次対応にご協力をお願い申し上げます。`
+        },
+        {
+          id: 'a5',
+          name: '5. 経営陣',
+          tag: '社内 / 役員・経営層',
+          when: '深刻度が非常に高く事業影響が大きい場合、または公開前の決裁時',
+          what: '概要、ビジネス・レピュテーション影響、対応方針、公開スケジュール',
+          how: '経営層向けエグゼクティブサマリー（口頭または文書）',
+          template: `件名: 【報告】製品セキュリティアドバイザリの公表および対応方針について\n\n経営陣 各位\n\nPSIRT長の〇〇より報告いたします。\n弊社製品 [製品名] において発見されたセキュリティ脆弱性につきまして、修正パッチの準備が整いましたので、[〇月〇日] に公式アドバイザリを公表いたします。\n\n・事象概要: [製品名] における [脆弱性の種類]\n・事業・レピュテーション影響: 現在悪用事例は確認されておらず、パッチ適用によりリスク解消可能\n・対応方針: アドバイザリ公開と同時に顧客へ修正パッチを提供\n\n詳細は添付のエグゼクティブサマリーをご参照ください。`
+        },
+        {
+          id: 'a6',
+          name: '6. 自社製品の顧客',
+          tag: '社外 / ユーザー',
+          when: '修正パッチまたは回避策の準備完了と同時（アドバイザリ公開）',
+          what: '影響範囲・深刻度（CVSS）、修正パッチ適用手順、回避策、問い合わせ窓口',
+          how: '公式セキュリティアドバイザリ、メール配信、製品内通知',
+          template: `件名: 【重要】[製品名] セキュリティアドバイザリ公開およびアップデートのお願い\n\n[製品名] をご利用のお客様\n\n平素は弊社製品をご愛顧いただき、誠にありがとうございます。\nPSIRT（製品セキュリティインシデントレスポンスチーム）より、弊社製品 [製品名] におけるセキュリティ脆弱性と、その対策に関する重要なお知らせがございます。\n\n・対象製品・バージョン: [製品名] バージョン [X.X]\n・深刻度: CVSS v3 [スコア] ([深刻度レベル])\n・対策方法: 修正パッチ（バージョン [Y.Y]）へのアップデート、または [回避策] の実施\n\nお客様の環境を保護するため、速やかにアップデートまたは回避策をご実施いただけますようお願い申し上げます。ご不明な点がございましたら、サポート窓口までお問合せください。`
+        },
+        {
+          id: 'a7',
+          name: '7. 上流サプライヤー',
+          tag: '社外 / ベンダー・パートナー',
+          when: '外部コンポーネント依存と判明した段階で速やかに',
+          what: '当該コンポーネントのバージョン、再現データ、修正要請・スケジュール確認',
+          how: '相手方のセキュリティ窓口（security.txt等）やCVDプラットフォーム',
+          template: `件名: 【情報照会・修正要請】貴社コンポーネントにおける脆弱性の確認依頼\n\n〇〇株式会社 セキュリティ担当窓口 様\n\nお世話になっております。株式会社〇〇 PSIRTの〇〇と申します。\n弊社製品にて使用しております貴社コンポーネント [コンポーネント名 / バージョン] におきまして、セキュリティ上の問題が疑われる事象を確認いたしました。\n\n・対象コンポーネント: [コンポーネント名 / バージョン]\n・確認された事象・再現データ: [概要 / 添付ファイル]\n\n誠に恐れ入りますが、本件のトリアージ状況および修正パッチ・今後の公表スケジュールについてご教示いただけますでしょうか。よろしくお願い申し上げます。`
+        }
+      ],
+      B: [
+        {
+          id: 'b1',
+          name: '1. 発見者 / 通報者',
+          tag: '社外 / 通報者',
+          when: '数時間以内（最優先）',
+          what: '実被害・悪用確認の共有、追加攻撃インジケータ（IOC）やログの提供依頼',
+          how: '暗号化メール / 直通電話（緊密なコミュニケーション体制）',
+          template: `件名: 【緊急対応中】悪用疑惑のご通報に関する御礼と追加情報提供のお願い\n\n〇〇 様\n\nPSIRT（製品セキュリティインシデントレスポンスチーム）でございます。\nこの度は、弊社製品における攻撃・悪用に関する緊急のご通報をいただき、深く感謝申し上げます。\n\n現在、CSIRTおよび開発チームを招集し、最優先で事実確認と被害拡大防止策の策定を進めております。\n恐れ入りますが、調査の精度向上のため、検出された攻撃インジケータ（IOC）や関連ログなどの追加情報がございましたら、本暗号化ラインにてご共有いただけますと大変助かります。状況が判明次第、順次進捗を共有いたします。`
+        },
+        {
+          id: 'b2',
+          name: '2. 開発チーム',
+          tag: '社内 / 緊急レスポンスチーム',
+          when: '即時（数十分〜数時間以内）',
+          what: '悪用の事実、緊急パッチ開発、または即時適用可能な「キルスイッチ/暫定回避策」の策定',
+          how: '緊急レスポンスチーム立ち上げ、専用チャットチャネル',
+          template: `件名: 【緊急・最優先】[製品名] ゼロデイ悪用発生に伴うキルスイッチ / 暫定回避策の即時策定依頼\n\n開発チーム 各位（緊急レスポンスチーム）\n\nPSIRTの〇〇です。\n顧客環境において、弊社製品 [製品名] の未公開脆弱性を悪用したアクティブ・エクスプロイトが確認されました。\nただちに緊急レスポンスチームを立ち上げ、以下の対応を最優先で実施してください。\n\n1. 悪用箇所の特定および修正コードの開発\n2. 修正パッチ完成までの間に顧客側で即時適用可能な「キルスイッチ / 暫定回避策」の策定（本日 [〇時] まで）\n\n至急、緊急チャットチャネルにご集合ください。`
+        },
+        {
+          id: 'b3',
+          name: '3. 広報・法務',
+          tag: '社内 / リスク管理',
+          when: '事実確認後、経営報告と同時並行（即時）',
+          what: '被害規模、法令（GDPR/CRA/個人情報保護法等）の報告義務、対外発表第一報の精査',
+          how: '緊急ミーティング、要員常駐による迅速なリーガルチェック',
+          template: `件名: 【緊急ミーティング依頼】ゼロデイ悪用発生に伴う対外発表・法令報告義務の確認\n\n広報部・法務部 各位\n\nPSIRTの〇〇です。緊急事態につき共有いたします。\n弊社製品 [製品名] に対するゼロデイ攻撃（アクティブ・エクスプロイト）が発生し、被害が確認されました。\n\nつきましては、被害規模の評価、各種法令（GDPR/個人情報保護法等）に基づく報告義務の確認、および対外発表第一報の精査のため、本日 [〇時〇分] より緊急ミーティングを開催いたします。担当者様のご参加をお願い申し上げます。`
+        },
+        {
+          id: 'b4',
+          name: '4. 営業・サポート',
+          tag: '社内 / 顧客対応窓口',
+          when: '顧客通知の直前〜同時',
+          what: '「調査中」である旨の第一報、顧客側で直ちに行うべき緊急一時措置、一次対応ガイド',
+          how: '緊急FAQの配布、サポート窓口のシフト体制強化',
+          template: `件名: 【緊急・至急確認】ゼロデイ悪用発生に関する顧客問い合わせ一次対応ガイドの共有\n\n営業本部・サポートチーム 各位\n\nPSIRTの〇〇です。\n弊社製品 [製品名] において未知の脆弱性を狙った攻撃が確認されたため、現在緊急調査を行っております。\n顧客からの緊急問い合わせに備え、一次対応ガイドを共有いたします。\n\n・現時点の対応方針: 「現在詳細を調査中」である旨を伝えるとともに、顧客側で直ちに実施すべき一時避難策（回避策）を案内する。\n・一次避難策: [設定変更や一部機能の停止手順]\n\n詳細なFAQおよび進捗は追ってアップデートいたします。サポートシフト体制の強化にご協力ください。`
+        },
+        {
+          id: 'b5',
+          name: '5. 経営陣',
+          tag: '社内 / エグゼクティブ',
+          when: '最優先（把握直後、数十分以内）',
+          what: 'ゼロデイ悪用の事実、ビジネス影響、法令ペナルティリスク、暫定措置の決裁',
+          how: '緊急エスカレーションルート（電話・対面報告）',
+          template: `【緊急セキュリティ報告】[製品名] ゼロデイ脆弱性の悪用発生について\n\n経営陣 各位\n\nPSIRT長 〇〇より緊急の報告と指示の仰ぎです。\n\n1. 事象概要\n本日〇時〇分、[製品名] の未公開脆弱性を悪用したアクティブ・エクスプロイト（攻撃）が顧客環境で発生していることを確認いたしました。\n\n2. 状況と影響範囲\n・対象: [製品名] バージョン 3.0 全般\n・現時点の被害: 顧客1社にてシステム不正侵入の痕跡を確認\n・潜在リスク: 未対策のまま放置された場合、全顧客への横展開リスクおよび規制当局への通知義務の発生\n\n3. 現在の対応体制\n・開発チームにて、緊急の機能無効化策（回避コード）を検証中（本日〇時までに提供予定）。\n・法務/広報と連携し、顧客向け第一報および当局報告文書を作成中。\n\n4. 経営陣への要請事項\n・本日〇時からの「緊急対策本部会議」の開催および承認\n・対外第一報の公表判断（パッチ未完成段階での回避策優先アラート発行の可否）`
+        },
+        {
+          id: 'b6',
+          name: '6. 顧客（影響層）',
+          tag: '社外 / 全顧客アカウント',
+          when: '対策未完成でも可能な限り速やかに（原則24時間以内）',
+          what: '未知の脆弱性が悪用されている事実、製品バージョン、直ちに実施すべき一時避難策',
+          how: '緊急アラートメール、Webポータル全域掲示、プッシュ通知',
+          template: `件名: 【緊急・重要セキュリティアラート】[製品名] における未公開脆弱性の悪用と一時回避策の実施について\n\n[製品名] をご利用のお客様\n\n平素は弊社製品をご利用いただき、誠にありがとうございます。\nPSIRT（製品セキュリティインシデントレスポンスチーム）より、緊急のセキュリティアラートをお知らせいたします。\n\n弊社製品 [製品名] において、未知の脆弱性を悪用した攻撃が確認されました。現在、恒久的な修正パッチの作成を最優先で進めておりますが、被害拡大を防止するため、お客様におかれましては直ちに以下の一時避難策をご実施いただけますようお願い申し上げます。\n\n・対象製品・バージョン: [製品名] バージョン [X.X]\n・直ちに実施すべき一時回避策: [回避策の手順 / 機能停止手順]\n\n修正パッチの提供目処が立ち次第、改めて通知いたします。ご迷惑とおご心配をおかけしますことを深くお詫び申し上げます。`
+        },
+        {
+          id: 'b7',
+          name: '7. 上流サプライヤー',
+          tag: '社外 / 外部コンポーネント提供元',
+          when: 'サプライヤー製コンポーネントが原因と判明した直後',
+          what: '悪用の事実（インシデント）、当該箇所の特定データ、緊急パッチ提供の最優先依頼',
+          how: '緊急連絡窓口、電話、PGP暗号化メールでの直接連携',
+          template: `件名: 【最優先・緊急連絡】貴社コンポーネントを標的としたゼロデイ悪用発生のお知らせ\n\n〇〇株式会社 セキュリティ緊急窓口 様\n\nお世話になっております。株式会社〇〇 PSIRTの〇〇と申します。\n緊急の事案が発生いたしましたのでご連絡いたします。\n\n弊社製品で使用している貴社コンポーネント [コンポーネント名 / バージョン] において、未知の脆弱性を悪用したアクティブ・エクスプロイトが確認されました。\n\n・対象コンポーネント: [コンポーネント名]\n・攻撃・悪用の事実（インシデントデータ）: [添付ログ・再現データ]\n\n貴社におかれましても緊急での検証および修正パッチの最優先提供をお願いしたく存じます。至急、担当者様より折り返しご連絡をいただけますようお願い申し上げます。`
+        }
+      ]
+    };
+
+    let currentPattern = 'A';
+
+    function setPattern(pattern) {
+      currentPattern = pattern;
+      document.body.className = pattern === 'B' ? 'theme-emergency' : '';
+
+      document.getElementById('btnPatternA').classList.toggle('active', pattern === 'A');
+      document.getElementById('btnPatternB').classList.toggle('active', pattern === 'B');
+
+      renderCards();
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cardsGrid');
+      const filterText = document.getElementById('searchInput').value.toLowerCase();
+      const list = psirtData[currentPattern];
+
+      container.innerHTML = '';
+
+      list.forEach(item => {
+        if (filterText && !item.name.toLowerCase().includes(filterText) && 
+            !item.what.toLowerCase().includes(filterText) && 
+            !item.tag.toLowerCase().includes(filterText)) {
+          return;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="card-title">${escapeHtml(item.name)}</div>
+            <span class="stakeholder-tag">${escapeHtml(item.tag)}</span>
+          </div>
+          
+          <div class="matrix-grid">
+            <div class="matrix-item">
+              <div class="matrix-label">When (いつ)</div>
+              <div class="matrix-val">${escapeHtml(item.when)}</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-label">What (何を)</div>
+              <div class="matrix-val">${escapeHtml(item.what)}</div>
+            </div>
+            <div class="matrix-item">
+              <div class="matrix-label">How (どう)</div>
+              <div class="matrix-val">${escapeHtml(item.how)}</div>
+            </div>
+          </div>
+
+          <div class="template-section">
+            <div class="template-header">
+              <span class="template-label">ポライトサンプル文案 (編集可能)</span>
+            </div>
+            <textarea class="template-text" id="tpl-${item.id}">${escapeHtml(item.template)}</textarea>
+            <button class="copy-btn" onclick="copyTemplate('tpl-${item.id}', this)">
+              テンプレートをコピー
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterCards() {
+      renderCards();
+    }
+
+    function copyTemplate(textareaId, btn) {
+      const textarea = document.getElementById(textareaId);
+      textarea.select();
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'コピーしました！';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // 初回レンダリング
+    renderCards();
+  </script>
+</body>
+</html>
