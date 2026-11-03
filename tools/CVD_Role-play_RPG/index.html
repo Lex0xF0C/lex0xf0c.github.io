@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVD Role-play RPG</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f8fafc;
+      --sub: #94a3b8;
+      --line: #334155;
+      --accent: #38bdf8;
+      --danger: #f43f5e;
+      --success: #22c55e;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.4rem;
+      color: var(--accent);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.85rem;
+      color: var(--sub);
+    }
+    .status-val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--ink);
+      margin-top: 2px;
+    }
+    .speaker-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .dialogue-box {
+      background: #0f172a;
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 1.05rem;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .choice-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #334155;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      margin-top: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .choice-btn:hover:not(:disabled) {
+      background: #475569;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .feedback-box {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #1e293b;
+      border: 1px solid var(--line);
+      display: none;
+    }
+    .feedback-box.correct { border-left: 5px solid var(--success); background: rgba(34, 197, 94, 0.1); }
+    .feedback-box.incorrect { border-left: 5px solid var(--danger); background: rgba(244, 63, 94, 0.1); }
+    .action-btn {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 16px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .action-btn:hover { background: #7dd3fc; }
+    .report-area {
+      width: 100%;
+      height: 220px;
+      background: #0f172a;
+      color: var(--sub);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+      margin-top: 10px;
+    }
+    .ending-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
+    .ending-success { color: var(--success); }
+    .ending-failure { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel">
+      <div class="header-title">
+        <span>🛡️</span>
+        <span>CVD修羅場シミュレーター (CVD Role-play RPG)</span>
+      </div>
+      <div class="status-bar" id="statusBar"></div>
+    </div>
+
+    <div class="panel" id="gamePanel">
+      <h2 id="sceneTitle">シナリオ読み込み中...</h2>
+      <div id="speakerTag" class="speaker-tag"></div>
+      <div id="dialogueText" class="dialogue-box"></div>
+      <div id="choicesArea"></div>
+      <div id="feedbackBox" class="feedback-box"></div>
+      <button id="nextBtn" class="action-btn" style="display:none;">次へ進む ▶</button>
+    </div>
+
+    <div class="panel" id="endPanel" style="display:none;">
+      <div id="endingHeader"></div>
+      <p id="endingDesc" style="font-size: 1.05rem; margin-bottom: 20px;"></p>
+      <h3>📊 振り返りレポート (Post-Mortem Report)</h3>
+      <textarea id="reportText" class="report-area" readonly></textarea>
+      <button id="copyBtn" class="action-btn" onclick="copyReport()">📋 レポートをクリップボードにコピー</button>
+      <button class="action-btn" style="background:var(--line); color:var(--ink);" onclick="initGame()">🔄 最初からリトライ</button>
+    </div>
+  </div>
+
+  <script>
+    const initialStats = {
+      mentalHp: 3,
+      devTrust: 50,
+      finderTrust: 50,
+      execSupport: 50
+    };
+
+    let state = { ...initialStats };
+    let currentSceneId = "start";
+    let historyLog = [];
+
+    const SCENARIOS = {
+      start: {
+        id: "start",
+        title: "第一報: 突如届いたゼロデイ報告",
+        speaker: "外部セキュリティ研究者",
+        dialogue: "「御社のネットワークストレージ(NAS)製品に認証回避とリモートコード実行(RCE)の重大な脆弱性を見つけた。3日以内にパッチを出さなければ、SNSでPoCコードと詳細をフルディスクロージャー（即時公開）する。」",
+        choices: [
+          {
+            text: "🤝 CVDガイドラインに基づき即座に受領確認を送信し、90日間の協調的開示（エンバーゴ）を提案する",
+            effects: { finderTrust: +30, devTrust: 0, execSupport: 0, mentalHp: 0 },
+            feedback: "【正解】標準的なCVD(協調的脆弱性開示)プロセスです。相手が威嚇的であっても、冷静に受領確認と開示プロセスのタイムラインを提示することで信頼関係を構築します。",
+            isCorrect: true,
+            nextId: "dev_resistance"
+          },
+          {
+            text: "⚡「脅迫には屈しない。未公開情報の公表は法的措置をとる」と強いトーンで反論する",
+            effects: { finderTrust: -50, devTrust: 0, execSupport: -20, mentalHp: -1 },
+            feedback: "【バッドエンドへ】研究者が激怒し、「誠意なし」としてX(Twitter)にPoC動画を即時投稿。ゼロデイ攻撃が発生しネットが大炎上しました。",
+            isCorrect: false,
+            nextId: "badend_sns_leak"
+          },
+          {
+            text: "🙈 「怪しい迷惑メールだろう」と判断し、数日間放置する",
+            effects: { finderTrust: -50, devTrust: 0, execSupport: -10, mentalHp: -1 },
+            feedback: "【バッドエンドへ】放置された研究者が海外セキュリティメディアにリーク。「セキュリティ無視の企業」として報じられました。",
+            isCorrect: false,
+            nextId: "badend_ignored"
+          }
+        ]
+      },
+      dev_resistance: {
+        id: "dev_resistance",
+        title: "開発チームの逆ギレ",
+        speaker: "組み込み開発リーダー",
+        dialogue: "「は？そのライブラリ何年前のC言語コードだと思ってるの？担当者も退職したし、迂闊にいじったら他機能が全滅するよ！3日やそこらでパッチなんて作れるわけないだろ！」",
+        choices: [
+          {
+            text: "💡 パッチ作成完了までの間、管理ポート(8443)のアクセス制限や特定Web機能のオフなど【回避策(Workaround)】の手順書を作成して先行公開しましょうと提案する",
+            effects: { devTrust: +25, finderTrust: +5, execSupport: +10, mentalHp: 0 },
+            feedback: "【正解】組み込み機器やクライアント製品では、パッチ作成と並行して「製品自体の設定変更で実施できる回避策」をユーザーに提示することが極めて現実的で有効です。",
+            isCorrect: true,
+            nextId: "exec_pressure"
+          },
+          {
+            text: "💣「パッチが無理なら、顧客に前置型WAFを買ってもらうようアドバイザリに書きましょう」と提案する",
+            effects: { devTrust: -15, finderTrust: -10, execSupport: -10, mentalHp: -1 },
+            feedback: "【不正解】組み込み機器やクライアント製品において、メーカー側がユーザーに「WAF設置」等の外部対策を回避策として要求するのは不適切です。製品自体で可能な設定変更を検討してください。",
+            isCorrect: false,
+            nextId: "dev_resistance_retry"
+          },
+          {
+            text: "⚡「つべこべ言わずに直してください！セキュリティ第一です！」と怒鳴りつける",
+            effects: { devTrust: -35, finderTrust: 0, execSupport: 0, mentalHp: -1 },
+            feedback: "【失敗】開発チームが「責任を持てない」と完全にボイコットし、対応が停止しました。",
+            isCorrect: false,
+            nextId: "badend_dev_strike"
+          }
+        ]
+      },
+      dev_resistance_retry: {
+        id: "dev_resistance_retry",
+        title: "回避策の再検討",
+        speaker: "組み込み開発リーダー",
+        dialogue: "「組み込み機器の顧客にWAF買えなんて言えるわけないだろ！現実的なやり方を考えてくれ！」",
+        choices: [
+          {
+            text: "🛠️ 機器の設定変更（特定ポートの遮断、リモート管理機能オフ）による回避策手順を開発チームと一緒に検証・作成する",
+            effects: { devTrust: +20, finderTrust: 0, execSupport: +5, mentalHp: 0 },
+            feedback: "【正解】実効性のある回避策を提示できたことで、開発チームの信頼を回復しパッチ開発の時間を確保できました。",
+            isCorrect: true,
+            nextId: "exec_pressure"
+          },
+          {
+            text: "🤷「じゃあ開発チームの責任でなんとかしてください」と突き放す",
+            effects: { devTrust: -40, finderTrust: 0, execSupport: 0, mentalHp: -1 },
+            feedback: "【バッドエンドへ】開発チームとの関係が崩壊しました。",
+            isCorrect: false,
+            nextId: "badend_dev_strike"
+          }
+        ]
+      },
+      exec_pressure: {
+        id: "exec_pressure",
+        title: "営業本部長の乱入",
+        speaker: "営業本部長",
+        dialogue: "「来週の公表だって！？冗談じゃない！今月は大口自治体案件の契約更新時期なんだ。脆弱性なんて出したら契約解除になる！公表を少なくとも1ヶ月隠せ！」",
+        choices: [
+          {
+            text: "📊 隠蔽発覚時の不祥事・ブランド失墜リスクと、透明性のある公表による『信頼できる企業姿勢』の定量的リスク比較を示して経営層を説得する",
+            effects: { execSupport: +30, devTrust: +10, finderTrust: 0, mentalHp: 0 },
+            feedback: "【正解】単に法や倫理を説くだけでなく、ビジネスリスク（法的責任・銘柄価値失墜）の観点から経営陣を説得し、予定通りの協調的開示の合意を得ました。",
+            isCorrect: true,
+            nextId: "advisory_draft"
+          },
+          {
+            text: "🤐 営業の圧力に屈し、発見者に無断でエンバーゴ期間の延長と発表延期を連絡する",
+            effects: { finderTrust: -45, execSupport: +10, devTrust: 0, mentalHp: -1 },
+            feedback: "【バッドエンドへ】約束を破られた発見者が「企業による隠蔽」として即座にゼロデイ脆弱性をフル公開。株価暴落と社会的非難に直面しました。",
+            isCorrect: false,
+            nextId: "badend_coverup"
+          }
+        ]
+      },
+      advisory_draft: {
+        id: "advisory_draft",
+        title: "アドバイザリとパッチの最終調整",
+        speaker: "JPCERT/CC 調整担当者",
+        dialogue: "「開発チームからパッチと詳細な回避策の手順が完了しました。発見者もアドバイザリ原案（CVE番号・謝辞・回避策）に同意しています。公表を実施しますか？」",
+        choices: [
+          {
+            text: "📢 CVE番号・謝辞・回避策手順・パッチ情報を含むセキュリティアドバイザリを協調公表し、製品アップデートを告知する",
+            effects: { finderTrust: +20, devTrust: +10, execSupport: +10, mentalHp: 0 },
+            feedback: "【クリアへ】関係者全員との調整が完了し、完璧なタイミングで協調的脆弱性開示(CVD)を完了できました！",
+            isCorrect: true,
+            nextId: "good_end"
+          },
+          {
+            text: "⏳「念のため、来月の定例アップデートまで公表を遅らせよう」と判断する",
+            effects: { finderTrust: -30, devTrust: 0, execSupport: -10, mentalHp: -1 },
+            feedback: "【バッドエンドへ】公開遅延中に第三者による野生の攻撃（In-the-wild Exploit）が観測され、対応が後手に回りました。",
+            isCorrect: false,
+            nextId: "badend_delayed_patch"
+          }
+        ]
+      },
+      good_end: {
+        id: "good_end",
+        title: "🎉 CLEAR: 協調的開示の成功",
+        speaker: "PSIRT事務局",
+        dialogue: "外部研究者、開発チーム、経営陣との対話を見事に完遂し、適切な回避策とパッチを添えて協調的開示(CVD)を達成しました！製品の安全性が守られました。",
+        isEnd: true,
+        isSuccess: true
+      },
+      badend_sns_leak: {
+        id: "badend_sns_leak",
+        title: "💀 GAME OVER: ゼロデイ暴露・炎上",
+        speaker: "システム",
+        dialogue: "発見者がX(Twitter)にPoCを公開。攻撃コードが出回り、経営層・顧客からの電話が鳴り止みません。",
+        isEnd: true,
+        isSuccess: false
+      },
+      badend_ignored: {
+        id: "badend_ignored",
+        title: "💀 GAME OVER: 放置によるリーク",
+        speaker: "システム",
+        dialogue: "無応答に耐えかねた研究者がセキュリティ機関と海外ニュースサイトにリーク。「危険な製品を売り続ける企業」として告発されました。",
+        isEnd: true,
+        isSuccess: false
+      },
+      badend_dev_strike: {
+        id: "badend_dev_strike",
+        title: "💀 GAME OVER: 開発組織の崩壊",
+        speaker: "システム",
+        dialogue: "無理な要求と高圧的な態度により開発チームがボイコット。パッチ開発の目処が完全に立たなくなりました。",
+        isEnd: true,
+        isSuccess: false
+      },
+      badend_coverup: {
+        id: "badend_coverup",
+        title: "💀 GAME OVER: 隠蔽工作の暴露",
+        speaker: "システム",
+        dialogue: "公表延期に激怒した発見者が隠蔽メールを暴露。コンプライアンス違反として株主代表訴訟に発展しました。",
+        isEnd: true,
+        isSuccess: false
+      },
+      badend_delayed_patch: {
+        id: "badend_delayed_patch",
+        title: "💀 GAME OVER: ゼロデイ悪用発生",
+        speaker: "システム",
+        dialogue: "公表を引き延ばしている間に攻撃者に脆弱性を悪用され、大口顧客のネットワークがランサムウェア被害に遭いました。",
+        isEnd: true,
+        isSuccess: false
+      },
+      badend_mental: {
+        id: "badend_mental",
+        title: "💀 GAME OVER: メンタル崩壊",
+        speaker: "システム",
+        dialogue: "社内外の板挟みによる過度のストレスにより、PSIRT担当者のメンタルHPがゼロになりました……。",
+        isEnd: true,
+        isSuccess: false
+      }
+    };
+
+    function renderStatus() {
+      const hpHearts = "❤️".repeat(Math.max(0, state.mentalHp)) || "💀";
+      const sb = document.getElementById("statusBar");
+      sb.innerHTML = `
+        <div class="status-item"><span>🧠 PSIRTメンタル</span><span class="status-val">${hpHearts}</span></div>
+        <div class="status-item"><span>💻 開発チーム信頼</span><span class="status-val">${state.devTrust}%</span></div>
+        <div class="status-item"><span>🕵️ 発見者信頼</span><span class="status-val">${state.finderTrust}%</span></div>
+        <div class="status-item"><span>👔 経営陣支持度</span><span class="status-val">${state.execSupport}%</span></div>
+      `;
+    }
+
+    function initGame() {
+      state = { ...initialStats };
+      historyLog = [];
+      document.getElementById("gamePanel").style.display = "block";
+      document.getElementById("endPanel").style.display = "none";
+      loadScene("start");
+    }
+
+    function loadScene(sceneId) {
+      currentSceneId = sceneId;
+      const scene = SCENARIOS[sceneId];
+      if (!scene) return;
+
+      renderStatus();
+
+      if (scene.isEnd) {
+        showEnding(scene);
+        return;
+      }
+
+      document.getElementById("sceneTitle").textContent = scene.title;
+      document.getElementById("speakerTag").textContent = scene.speaker;
+      document.getElementById("dialogueText").textContent = scene.dialogue;
+
+      const choicesArea = document.getElementById("choicesArea");
+      choicesArea.innerHTML = "";
+      document.getElementById("feedbackBox").style.display = "none";
+      document.getElementById("nextBtn").style.display = "none";
+
+      scene.choices.forEach((choice, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = `${String.fromCharCode(65 + idx)}. ${choice.text}`;
+        btn.onclick = () => selectChoice(choice);
+        choicesArea.appendChild(btn);
+      });
+    }
+
+    function selectChoice(choice) {
+      if (choice.effects) {
+        if (choice.effects.mentalHp !== undefined) state.mentalHp += choice.effects.mentalHp;
+        if (choice.effects.devTrust !== undefined) state.devTrust = Math.max(0, Math.min(100, state.devTrust + choice.effects.devTrust));
+        if (choice.effects.finderTrust !== undefined) state.finderTrust = Math.max(0, Math.min(100, state.finderTrust + choice.effects.finderTrust));
+        if (choice.effects.execSupport !== undefined) state.execSupport = Math.max(0, Math.min(100, state.execSupport + choice.effects.execSupport));
+      }
+
+      renderStatus();
+
+      const scene = SCENARIOS[currentSceneId];
+      historyLog.push({
+        sceneTitle: scene.title,
+        choiceText: choice.text,
+        feedback: choice.feedback,
+        isCorrect: choice.isCorrect
+      });
+
+      const btns = document.querySelectorAll(".choice-btn");
+      btns.forEach(b => { b.disabled = true; });
+
+      const fbBox = document.getElementById("feedbackBox");
+      fbBox.className = "feedback-box " + (choice.isCorrect ? "correct" : "incorrect");
+      fbBox.innerHTML = `<strong>${choice.isCorrect ? "💡 CVD解説" : "⚠️ 問題点"}:</strong><p style="margin:6px 0 0 0;">${choice.feedback}</p>`;
+      fbBox.style.display = "block";
+
+      const nextBtn = document.getElementById("nextBtn");
+      nextBtn.style.display = "block";
+
+      if (state.mentalHp <= 0) {
+        nextBtn.onclick = () => loadScene("badend_mental");
+      } else {
+        nextBtn.onclick = () => loadScene(choice.nextId);
+      }
+    }
+
+    function showEnding(scene) {
+      document.getElementById("gamePanel").style.display = "none";
+      const endPanel = document.getElementById("endPanel");
+      endPanel.style.display = "block";
+
+      const header = document.getElementById("endingHeader");
+      header.className = "ending-title " + (scene.isSuccess ? "ending-success" : "ending-failure");
+      header.textContent = scene.title;
+
+      document.getElementById("endingDesc").textContent = scene.dialogue;
+
+      generateReport(scene.isSuccess);
+    }
+
+    function generateReport(isSuccess) {
+      let md = `# 🛡️ CVD修羅場シミュレーション 振り返りレポート\n\n`;
+      md += `## ■ 判定結果\n`;
+      md += `- 結果: ${isSuccess ? "成功（協調的開示達成）" : "失敗（ゲームオーバー）"}\n`;
+      md += `- 最終ステータス:\n`;
+      md += `  - PSIRTメンタル: ${"❤️".repeat(Math.max(0, state.mentalHp))}\n`;
+      md += `  - 開発チーム信頼度: ${state.devTrust}%\n`;
+      md += `  - 外部発見者信頼度: ${state.finderTrust}%\n`;
+      md += `  - 経営陣支持度: ${state.execSupport}%\n\n`;
+      md += `## ■ 対応の軌跡と学習のポイント\n`;
+
+      historyLog.forEach((item, i) => {
+        md += `### ${i + 1}. ${item.sceneTitle}\n`;
+        md += `- **選択した対応**: ${item.choiceText}\n`;
+        md += `- **CVD解説**: ${item.feedback}\n\n`;
+      });
+
+      document.getElementById("reportText").value = md;
+    }
+
+    function copyReport() {
+      const area = document.getElementById("reportText");
+      area.select();
+      document.execCommand("copy");
+      alert("振り返りレポート(Markdown)をクリップボードにコピーしました！");
+    }
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>
