@@ -133,8 +133,16 @@ Secriptorium は、欧州にデジタル要素を含む製品を輸出・展開�
 
 
 ## その他のツール
+### Incident Chronology Studio（クロノロジー作成支援ツール）
 
-### 脆弱性アドバイザリ作成ツール(lite-advisory-maker)
+<https://lex0xf0c.github.io/incident-chronology-studio/>
+
+サイバーインシデントを時系列で整理する「クロノロジー」の作成のための支援ツールです。
+
+- リポジトリ: <https://github.com/Lex0xF0C/incident-chronology-studio>
+- ライセンス: MIT
+
+### lite-advisory-maker(脆弱性アドバイザリ作成ツール)
 
 <https://lex0xf0c.github.io/lite-advisory-maker/>
 
